@@ -37,15 +37,8 @@ def create_app(test_config = None):
     # 引入blog的视图文件
     from app.blog import views as blog
     app.register_blueprint(blog.bp)
-
-    # 注册数据库模型
-    from app.blog import models
+    # url 引入
+    app.add_url_rule('/', endpoint='index', view_func=blog.index)
 
     return app
 
-# 实例化了一个
-# app = Flask(__name__)
-
-# @app.route("/hello")
-# def hello_world():
-#     return "<p>Hello,World!</p>"

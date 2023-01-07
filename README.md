@@ -1,5 +1,55 @@
-class BaseModel:
-pass# 开始
+# 01前言
+
+本套教程命名为**《flask博客项目开发实战》**，开发这套教程的目的旨在免费分享知识，记录个人学习成果，梳理个人知识体系， 如若还有更高的使用价值，那便是希望能给初学flask的朋友、同学一些微末的参考！
+
+本教程所载入的内容均来自个人学习的一些成果总结，可能会存在一些不准确、不规范之处，请各位参考学习的同学自行分辨！
+
+教程内所有功能均未经严格测试，请勿用于生产环境，如若产生任何后果均与本人无关！
+
+## **疑惑**
+
+但凡对python Web开发感兴趣的同学，一般都应该知道django和flask框架，而初学者经常会有以下疑问？
+
+**python web应该选django还是flask？**
+
+这是很多初学者最爱纠结的问题，以网络比较流行的一个说法来回答这个问题，**“小孩子才做选择，大人是全都要”**，我个人觉得非常贴切。
+
+为什么这么说？以成年人的视角，那就是学好框架去挣钱，会的多就挣得多，这是一个原因！
+
+另外我们可以看看下边这组数据，截止我写这篇教程时django与flask在github的star数分别为64.1k和59k。 单从star数量就可以看出，这两个框架在python web方面所占的比例以及使用人群的广泛程度，更加印证了学好两个框架可以挣更多钱，有人用就有市场，有市场就有需求，有需求就有我们存在的意义！
+
+当然这个又是小孩子的逻辑，但有时候成年人会把简单的问题复杂化，反而我个人认为小孩子的逻辑才是最睿智的！
+
+## **建议**
+
+以我个人的学习经验，特别是那种基础薄弱的人，别犹豫先从django开始学习，django相比flask是一个大而全的框架，它内置了开发网站基本上可以说所有的工具以及应用场景所给出的解决方案， 甚至python只要有一点点基础，就可以按照django的学习步骤做出项目，他的脚手架工具也会让我们对网站的基础布局以及网站开发的相关知识有更全面的认识和了解！
+
+而flask是一个微框架，微即代表它内置的东西非常少，也使其更具灵活性，但越灵活的东西就越需要多的知识储备，更需要自己有更强的编程能力，很多功能需要自己去实现，或者依赖第三方框架， 过多的依赖第三方框架无疑会增加学习成本，同时项目的未来也会有很多不确定性，某个第三方依赖一旦爆出问题或者不再维护，也会直接影响到我们的项目。
+
+这也不是说flask全是缺点，flask最大的优点就是轻量，简单。
+
+这也就是为什么我说学完django再学flask，你反过来在flask中实现django的一些功能，就会更加有逻辑和意识，别抬杠，django中的很多内置的东西，flask开发网站都需要！
+
+这也就是，网络上很多flask的教程往往会把某些知识点用django作为参考的原因所在！
+
+## 适合人群
+
+- 知道域名、端口等基础的概念
+- 对python有基础的了解
+- 有js、css、html基础
+- 会用pip安装第三方库
+- 会django更加完美
+
+## 技术栈及工具
+
+- python 3.10
+- flask 2.1 版 - https://flask.palletsprojects.com/en/2.1.x/
+- bulma css框架 - https://bulma.io/
+- sqlit3
+- vscode编辑器
+
+
+# 02开始
 
 请在开始前确保系统已经正确安装python，且版本大于3.7
 
@@ -59,7 +109,7 @@ pip freeze > req.txt
 
 
 
-# flask最简视图
+# 03flask最简视图
 
 首先创建一个app.py 的文件，以开始我们下来的操作
 
@@ -116,7 +166,7 @@ Running on http://127.0.0.1:5000 (Press CTRL+C to quit)
 
 
 
-# 目录结构
+# 04目录结构
 
 为保证项目可持续发展，利于后期扩展，我们从开始创建项目就应该先规划好目录结构，一个好的目录结构可以让我们的项目整洁有序，并利于维护和后期进一步扩展!
 之前快速上手中创建的app.py的文件便可以删除，亦或者你重新创建一个项目开始以下的内容，建议是新建一个目录来开始我们以下的内容!
@@ -850,6 +900,276 @@ flask db upgrade
 
 
 
+
+
+
+
+# 10实现博客首页视图及样式
+
+本套教程是一个Flask实战类教程，html/css/javascript等相关技术栈不会过多的去详细解释，那么就需要各位初学者尽可能的先去掌握这些基础知识，当然本套教程不需要你对其非常精通，但最起码得做到能看懂其意思！
+
+## 静态文件
+
+静态文件是相对动态的web应用而言的，一般是指css和js文件！ 网站应用部署的时候，这些静态文件通常由Nginx等静态文件服务器处理，但是在开发过程中， Flask 也能做好 这项工作。
+
+一般，Flask的静态文件位于应用的 `/static` 中，模板文件位于应用的 `/templates`中。
+
+因此上，我们需要在`app/blog/`目录下分别创建一个`static`及`templates`的文件夹，用来对应的存放博客的静态文件及模板文件！
+
+## 创建博客首页视图
+
+在`app/blog/views.py`中通过蓝图的方式创建首页视图,代码如下：
+
+Flask 会自动为你配置 Jinja2 模板引擎。
+
+使用 render_template() 方法可以渲染模板，你只要提供模板名称和需要 作为参数传递给模板的变量就行了。
+
+```python
+from flask import Blueprint, render_template
+
+bp = Blueprint('blog', __name__, url_prefix='/blog', template_folder='templates', static_folder='static')
+
+def index():
+    """首页视图
+    """
+    posts = [1,2,3,4,5,6]
+    return render_template('index.html', posts=posts)
+```
+
+在之前的蓝图应用章节我们对蓝图的使用做了大概的说明，其中这里新增了几个参数需要单独拉出来说一下，Blueprint类的template_folder参数就是指定该蓝图需要独立使用的模板文件夹，这个路径是相对路径或绝对路径，static_folder参数即设置静态文件目录，这样做的好处是我们就可以把每个功能模块拆分，静态文件和模板文件也可以独立拆分，这个思路是有借鉴django项目的布局方式，利于维护和后期的动态扩展！
+
+index函数则就是一个python的普通函数，只是在返回的时候我们使用了Flask提供的render_template方法来动态渲染模板和载入上下文数据，启动posts=posts就是我们构造的一个上下文演示数据，下来将会在模板文件中使用该上下文，这里需要注意的是我们并没有使用装饰器的方法去绑定url，下来我们要介绍一个url和视图分离的url方式！
+
+## add_url_rule方法分离视图与url
+
+在项目目录（RealProject）的__init__.py中的工厂函数`create_app`底部创建如下代码
+
+```python
+def create_app(test_config=None):
+
+    app = Flask(__name__, instance_relative_config=True)
+
+    # 省略中间代码
+    ...
+    return app
+
+def register_bp(app:Flask):
+    # 注册视图方法
+    from app.blog import views as blog
+    # 注册蓝图
+    app.register_blueprint(blog.bp) 
+
+    # 首页url
+    app.add_url_rule(rule='/', endpoint='index', view_func=blog.index)
+```
+
+add_url_rule的参数解析：
+
+- rule参数是真正的url，url开头必须以斜杠开始；
+- endpoint参数是该url的端点，类似于django的name参数，它的作用是方便反查该url，一般的加载解析顺序是访问该url会先找该端点再找其关联的视图，然后开始处理逻辑，相当于url的id；
+- view_func参数则是该url指向的函数，绑定url与函数！
+
+之后只需要将register_bp函数引入工厂函数中即可,工厂函数代码修改如下：
+
+```python
+def create_app(test_config=None):
+    app = Flask(__name__, instance_relative_config=True)
+
+    if test_config is None:
+        CONFIG_PATH = BASE_DIR / 'RealProject/settings.py'
+        app.config.from_pyfile(CONFIG_PATH, silent=True)
+    else:
+        # test_config为一个字典
+        app.config.from_mapping(test_config)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    # 注册视图
+    register_bp(app)
+
+    # 注册模型
+    from app.blog import models
+    from app.auth import models 
+    return app
+```
+
+## 创建博客首页模板文件
+
+在`app/blog/templates`目录下创建`index.html`,这就是render_template方法第一个参数对应的模板文件，内容如下：
+
+模板中用到的相关Jinja2模板语法，请自行查询文档理解
+
+- Jinja2 模板文档 ： https://jinja.palletsprojects.com/en/3.1.x/templates/
+
+```html
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ url_for('blog.static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('blog.static', filename='css/buefy.min.css') }}">
+    {% block extra_head_style %}{% endblock extra_head_style %}   
+</head>
+
+<body>
+    <div id="app" style="height:100%;">
+        <div class="container is-fluid1" style="height:100%; ">
+            <div class="is-block" style="height:100%;">
+                <!-- 导航 -->
+                {% block navbar %}     
+                <template>
+                    <b-navbar spaced shadow>
+                        <template #brand>
+                            <b-navbar-item>
+                                <img src="{{ url_for('blog.static', filename='img/logo.png') }}" alt="FlaskBlog">
+                            </b-navbar-item>
+                        </template>
+                        <template #start>
+                            <b-navbar-item href="#">
+                                Home
+                            </b-navbar-item>
+                            <b-navbar-item href="#">
+                                Documentation
+                            </b-navbar-item>
+                            <b-navbar-dropdown label="Info">
+                                <b-navbar-item href="#">
+                                    About
+                                </b-navbar-item>
+                                <b-navbar-item href="#">
+                                    Contact
+                                </b-navbar-item>
+                            </b-navbar-dropdown>
+                        </template>
+
+                        <template #end>
+                            <b-navbar-item tag="div">
+                                <div class="buttons">
+                                    <a class="button is-primary">
+                                        <strong>Sign up</strong>
+                                    </a>
+                                    <a class="button is-light">
+                                        Log in
+                                    </a>
+                                </div>
+                            </b-navbar-item>
+                        </template>
+                    </b-navbar>
+                </template>
+                {% endblock navbar %}
+                <!-- 导航 end -->
+
+                {% block hero %}
+                <section class="hero is-medium is-primary">
+                    <div class="hero-body">
+                        <p class="title">
+                            Large hero
+                        </p>
+                        <p class="subtitle">
+                            Large subtitle
+                        </p>
+                    </div>
+                </section>
+                {% endblock hero %}
+
+                {% block main %} 
+                <div class="box is-marginless is-shadowless is-radiusless">
+                    <div class="columns is-multiline">
+                        {% for post in posts %}
+                        <div class="column is-4-fullhd">
+                            <div class="card">
+                                <div class="card-image">
+                                    <figure class="image is-4by3">
+                                        <img src="https://bulma.io/images/placeholders/1280x960.png"
+                                            alt="Placeholder image">
+                                    </figure>
+                                </div>
+                                <div class="card-content">
+                                    <div class="media">
+                                        <div class="media-content">
+                                            <p class="title is-4"><a href="">Flask博客实战 - 掌握增删改查</a> </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="content">
+                                        <p class=" has-text-grey is-size-7"> 
+                                            既然我们选择了使用ORM框架，那就必须熟练掌握其提供的增删改查方法，在正式编写视图事前，
+                                            本节内容我们先在shell环境中来了解和熟悉其增删改查的基础方法！
+                                        </p>
+                                        <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <nav class="pagination" role="navigation" aria-label="pagination">
+                        <a class="pagination-previous is-disabled" title="This is the first page">Previous</a>
+                        <a class="pagination-next">Next page</a>
+                        <ul class="pagination-list">
+                          <li>
+                            <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">1</a>
+                          </li>
+                          <li>
+                            <a class="pagination-link" aria-label="Goto page 2">2</a>
+                          </li>
+                          <li>
+                            <a class="pagination-link" aria-label="Goto page 3">3</a>
+                          </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% endblock main %}
+
+
+
+                {% block footer %}      
+                <div class="footer has-background-black-ter is-marginless">
+                    <div class="has-text-centered has-text-grey-light">
+                        © 2022 <a class="has-text-grey-light" href="http://www.lotdoc.cn/blog/topic/detail/6/">FlaskBlog博客实战</a> 版权所有 备案号：陕ICP备20005686号
+                    </div>
+                </div>
+                {% endblock footer %}
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('blog.static', filename='js/vue.js') }}"></script>
+    <script src="{{ url_for('blog.static', filename='js/buefy.min.js') }}"></script>
+    {% block extra_foot_script %}{% endblock extra_foot_script %}
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {},
+            methods: {}
+        })
+    </script>
+    {% block vue_script %}{% endblock vue_script %}
+</body>
+
+</html>
+```
+
+## 静态文件说明
+
+模板中我们看到加载静态文件的方法使用了`{{ url_for('blog.static', filename='css/style.css') }}`这样的语法，这是固定写法，第一个参数就是静态文件的路径，这里使用了蓝图来隔离了各应用之间的静态文件，那么`blog.static`即代表加载blog蓝图中的静态文件夹，filename则是静态文件的路径字符串，加载图片也是同样的方法！
+
+本项目前端依赖的第三方框架有：
+
+- buefy -- https://buefy.org/
+- bulma -- https://bulma.io/
+- vue2 -- https://cn.vuejs.org/
+
+请自行下载该三个框架的相关文件引入，这里就当是给大家留的作业，去试试吧！
+
+## 最终样式
+
+![最终样式](file:///C:/Users/chent/Downloads/Compressed/site/img/index.jpeg)
 
 
 
