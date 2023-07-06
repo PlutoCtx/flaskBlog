@@ -329,3 +329,120 @@ try:
 except OSError:
     pass
 ```
+
+# 06Flask蓝图应用
+
+
+
+## 什么是蓝图
+
+蓝图是一个对象，它允许在不需要应用程序对象的情况下定义应用程序函数，它使用与Flask相同的装饰器，但通过记录它们以供以后注册来推迟对应用程序的需求
+
+## 创建蓝图
+
+学过django的同学应该都知道，应用的视图函数一般都写在应用目录下的views.py中，没学过django也无关紧要，在应用目录app文件夹下创建一个views.py的文件，这里用来集中存储blog的视图代码。
+
+通过蓝图创建一个比克首页的基本视图，代码如下：
+
+```python
+from flask import Blueprint
+
+bp = Blueprint('blog', __name__, url_prefix = '/blog')
+
+@bp.route('index/')
+def index():
+    return 'Hello World!'
+```
+
+## 代码详解
+
+1、首先引入了蓝图对象，这个蓝图Blueprint与Flask类是
+
+```python
+from flask import Blueprint
+```
+
+2、实例化一个蓝图对象，需要两个必须参数，第一个是应用的名称，第二个__name__是该应用的位置，其他参数都是可选的，我们这里用关键字参数url_prefix = '/blog'指定了该应用的一个url的命名空间，和django的urls中的app_name类似，这个值会出现在该应用url之前，比如我们现在这个url访问的话应该是：http://127.0.0.1:5000/blog/index/
+
+```python
+from flask import Blueprint
+bp = Blueprint('blog', __name__, url_prefix='/blog')
+```
+
+3、创建了blog应用的一个视图，用蓝图实例来绑定route，把该url定义在该应用当中
+
+```python
+@bp.route("index/")
+def index():
+    return render_template()
+```
+
+
+
+## 注册蓝图
+
+上边我们就说了，这个应用通过蓝图创建，如果不去项目注册的话，他是不会被运行的，这就要我们去工厂函数中注册蓝图
+
+首先，把该views文件引入到blog的__init_.py文件中，以便后续调用
+
+```python
+# app/blog/__init__.py
+from . import views
+```
+
+最后，在项目目录的__init__.py中的工厂函数中通过app实例的提供的register_blueprint方法注册蓝图，代码如下：
+
+```python
+from flask import Flask
+def create_app(test_config = None):
+    
+    app = Flask(__name__, instance_relative_config = True)
+    # ... 省略部分代码
+    
+    # 注册博客蓝图
+    from app.blog import views as blog
+    app.register_blueprint(blog.bp)
+    
+    return app
+```
+
+
+
+## 定义入口
+
+在入口文件manage.py中引入以下代码，代码非常简单，不做过多解释
+
+```python
+from RealProject import create_app
+
+app = create_app()
+
+# 当运行这个文件的时候才执行run()方法
+if __name__ == '__main__':
+    app.run(debug = True)
+```
+
+
+
+## 运行项目
+
+在终端运行该文件即可成功启动项目，默认我们设置了run方法的debug模式为True，也就是开启了Flask的调试模式
+
+```cmd
+py manage.py
+```
+
+返回如下内容，说明启动成功
+
+```
+ * Serving Flask app 'RealProject'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.43.127:8000
+
+```
+
+在浏览器我们访问刚才定义的url，[127.0.0.1:8000/blog/hello/index](http://127.0.0.1:8000/blog/hello)
+

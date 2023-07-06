@@ -5,3 +5,11 @@
 # @File: views.py
 # @Software: PyCharm
 # @User: chent
+
+from flask import Blueprint
+
+bp = Blueprint('blog', __name__, url_prefix='/blog')
+
+@bp.route('/hello')
+def index():
+    return 'Hello World!'

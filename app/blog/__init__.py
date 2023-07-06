@@ -5,3 +5,5 @@
 # @File: __init__.py.py
 # @Software: PyCharm
 # @User: chent
+
+from .views import bp

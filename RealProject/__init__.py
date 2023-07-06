@@ -36,16 +36,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    @app.route('/hello')
-    def hello_world():  # put application's code here
-        return 'Hello World!'
+    from app.blog import views as blog
+    app.register_blueprint(blog.bp)
 
     return app
-
-
-
-
-
-# # 实例化了一个flask类
-# app = Flask(__name__)
-#
